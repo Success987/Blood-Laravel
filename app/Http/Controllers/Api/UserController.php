@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Mail;
 class UserController extends Controller
 {
     public function post_login(Request $request)
@@ -88,6 +88,7 @@ class UserController extends Controller
     }
     public function post_forget(Request $request)
     {
+        Mail::to($request->email)->send('hello');
     }
     public function post_update($id, Request $request)
     {
