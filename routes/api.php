@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login',[UserController::class,'post_login']);
 Route::post('/create',[UserController::class,'post_create']);
+Route::post('/update/{id}',[UserController::class,'post_update']);
 Route::post('/forget',[UserController::class,'post_forget']);
 Route::get('/get_blood_request',[UserController::class,'get_blood_request']);
 Route::post('/add_blood_request',[UserController::class,'add_blood_request']);

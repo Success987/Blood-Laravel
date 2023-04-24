@@ -89,6 +89,55 @@ class UserController extends Controller
     public function post_forget(Request $request)
     {
     }
+    public function post_update($id, Request $request)
+    {
+        $user = User::where('id',$id)->first();
+        if (!$user) {
+            $message = "User Not Found!";
+            return response()->json(['status' => false, 'message' => $message]);
+        }
+
+        if ($request->isMethod('POST')) {
+            $data = $request->all();
+            $rules = [
+                "name" => "required",
+                "phone" => "required",
+                "address" => "required",
+                "blood_type" => "required",
+                "email" => "required|unique:users",
+                "password" => "required"
+            ];
+
+            $customMessage = [
+                'email.required' => 'Email is required',
+                'email.email' => 'Valid Email is required',
+                'email.unique' => 'Email is already exists',
+                'password.required' => 'Password is required',
+                'phone.required' => 'Phone is required',
+                'blood_type.required' => 'Blood_type is required',
+
+                'name.required' => 'Name is required',
+                'address.required' => 'Address is required',
+            ];
+
+            $validator = Validator::make($data, $rules, $customMessage);
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            } else {
+                $user->name = $data['name'];
+                $user->gender = $data['gender'];
+                $user->address = $data['address'];
+                $user->blood_type = $data['blood_type'];
+
+                $user->phone = $data['phone'];
+                $user->email = $data['email'];
+                $user->password = Hash::make($data['password']);
+                $user->save();
+                $message = "User Upadated Successfully!";
+                return response()->json(["status" => true, "userID" => $user, "message" => $message], 201);
+            }
+        }
+    }
 
     public function userLogout(Request $request)
     {
