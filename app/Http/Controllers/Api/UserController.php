@@ -104,7 +104,7 @@ class UserController extends Controller
                 "phone" => "required",
                 "address" => "required",
                 "blood_type" => "required",
-                "email" => "required|unique:users",
+                "email" => "required",
             ];
 
             $customMessage = [
@@ -124,7 +124,10 @@ class UserController extends Controller
                 return response()->json($validator->errors(), 422);
             } else {
                 $user->name = $data['name'];
-                $user->gender = $data['gender'];
+                if (isset($data['gender'])) {
+                    $user->gender = $data['gender'];
+                }
+
                 $user->address = $data['address'];
                 $user->blood_type = $data['blood_type'];
 
@@ -133,7 +136,7 @@ class UserController extends Controller
                 if (isset($data['password'])) {
                     $user->password = Hash::make($data['password']);
                 }
-                
+
                 $user->save();
                 $message = "User Upadated Successfully!";
                 return response()->json(["status" => true, "userID" => $user, "message" => $message], 201);
