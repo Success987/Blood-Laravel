@@ -105,7 +105,6 @@ class UserController extends Controller
                 "address" => "required",
                 "blood_type" => "required",
                 "email" => "required|unique:users",
-                "password" => "required"
             ];
 
             $customMessage = [
@@ -131,7 +130,10 @@ class UserController extends Controller
 
                 $user->phone = $data['phone'];
                 $user->email = $data['email'];
-                $user->password = Hash::make($data['password']);
+                if (isset($data['password'])) {
+                    $user->password = Hash::make($data['password']);
+                }
+                
                 $user->save();
                 $message = "User Upadated Successfully!";
                 return response()->json(["status" => true, "userID" => $user, "message" => $message], 201);
