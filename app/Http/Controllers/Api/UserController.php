@@ -27,7 +27,7 @@ class UserController extends Controller
                 return response()->json(["status" => true, "message" => $message, "userID" => $user], 201);
             } else {
                 $message = "Email or Password incorrect!";
-                return response()->json(["status" => false, "message" => $message], 201);
+                return response()->json(["status" => false, "message" => $message], 204);
             }
         }
     }
@@ -88,7 +88,19 @@ class UserController extends Controller
     }
     public function post_forget(Request $request)
     {
-        Mail::to($request->email)->send('hello');
+        // Mail::to($request->email)->send();
+        Mail::send('Html.view', 'asddfd', function ($message,$request) {
+            $message->from('john@johndoe.com', 'John Doe');
+            $message->sender('john@johndoe.com', 'John Doe');
+            $message->to($request->email, 'John Doe');
+            $message->cc('john@johndoe.com', 'John Doe');
+            $message->bcc('john@johndoe.com', 'John Doe');
+            $message->replyTo('john@johndoe.com', 'John Doe');
+            $message->subject('Subject');
+            $message->priority(3);
+            $message->attach('pathToFile');
+        });
+        // Mail::to($request->email)->send('hello');
     }
     public function post_update($id, Request $request)
     {
@@ -184,30 +196,30 @@ class UserController extends Controller
         }
     }
 
-    public function userDashboard(Request $request)
-    {
-        $header = $request->header('Authorization');
-        if (empty($header)) {
-            $message = "Header Authorization Toke is mission in Api Header";
-            return response()->json(['status' => false, 'message' => $message], 422);
-        } else {
-            if ($header = str_replace("Bearer ", "", $header)) {
-                $authUserData = User::where('access_token', $header)->first();
+    // public function userDashboard(Request $request)
+    // {
+    //     $header = $request->header('Authorization');
+    //     if (empty($header)) {
+    //         $message = "Header Authorization Toke is mission in Api Header";
+    //         return response()->json(['status' => false, 'message' => $message], 422);
+    //     } else {
+    //         if ($header = str_replace("Bearer ", "", $header)) {
+    //             $authUserData = User::where('access_token', $header)->first();
 
-                $userDetails = User::find($authUserData->id);
-                $TotaluserOrder = Order::where('user_id', $userDetails->id)->count();
-                $pendingOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'pending')->count();
-                $processOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'In Progress')->count();
-                $deliveredOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'Delivered')->count();
-                $CanceledOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'Canceled')->count();
-                $message = "Your Dashboard Details!";
-                return response()->json(["status" => true, "userDetails" => $userDetails, "TotaluserOrder" => $TotaluserOrder, "pendingOrder" => $pendingOrder, "processOrder" => $processOrder, "deliveredOrder" => $deliveredOrder, "CanceledOrder" => $CanceledOrder, "message" => $message], 201);
-            } else {
-                $message = "Header Authorization is incorrect !";
-                return response()->json(["status" => false, "message" => $message], 422);
-            }
-        }
-    }
+    //             $userDetails = User::find($authUserData->id);
+    //             $TotaluserOrder = Order::where('user_id', $userDetails->id)->count();
+    //             $pendingOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'pending')->count();
+    //             $processOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'In Progress')->count();
+    //             $deliveredOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'Delivered')->count();
+    //             $CanceledOrder = Order::where('user_id', $userDetails->id)->where('order_status', 'Canceled')->count();
+    //             $message = "Your Dashboard Details!";
+    //             return response()->json(["status" => true, "userDetails" => $userDetails, "TotaluserOrder" => $TotaluserOrder, "pendingOrder" => $pendingOrder, "processOrder" => $processOrder, "deliveredOrder" => $deliveredOrder, "CanceledOrder" => $CanceledOrder, "message" => $message], 201);
+    //         } else {
+    //             $message = "Header Authorization is incorrect !";
+    //             return response()->json(["status" => false, "message" => $message], 422);
+    //         }
+    //     }
+    // }
     public function add_blood_request(Request $request)
     {
     }
